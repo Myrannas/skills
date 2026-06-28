@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { homedir } from "node:os";
+import { join, resolve } from "node:path";
 
 const BASE_URL = "https://api.gamalytic.com";
 
@@ -84,7 +85,7 @@ class GamalyticClient {
 
 async function main() {
   const args = parseArgv(process.argv.slice(2));
-  loadDotEnv(stringOpt(args, "env-file") ?? ".env");
+  loadEnvFiles(args);
 
   if (!args.command || hasFlag(args, "help") || args.command === "help") {
     printHelp(args.command === "help" ? args.positional[0] : args.command);
@@ -146,7 +147,7 @@ function parseArgv(argv) {
 }
 
 function loadDotEnv(path) {
-  const envPath = resolve(process.cwd(), path);
+  const envPath = resolveEnvPath(path);
   if (!existsSync(envPath)) return;
 
   const contents = readFileSync(envPath, "utf8");
@@ -163,6 +164,17 @@ function loadDotEnv(path) {
 
     process.env[key] = unquoteEnvValue(rawValue);
   }
+}
+
+function loadEnvFiles(args) {
+  loadDotEnv(stringOpt(args, "env-file") ?? ".env");
+  if (!process.env.GAMALYTIC_API_KEY) loadDotEnv("~/.config/skills.env");
+}
+
+function resolveEnvPath(path) {
+  if (path === "~") return homedir();
+  if (path.startsWith("~/")) return join(homedir(), path.slice(2));
+  return resolve(process.cwd(), path);
 }
 
 function unquoteEnvValue(value) {

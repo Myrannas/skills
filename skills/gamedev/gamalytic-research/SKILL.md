@@ -15,7 +15,7 @@ Run from this skill folder:
 node scripts/gamalytic.mjs --help
 ```
 
-The script loads `GAMALYTIC_API_KEY` from the environment or a local `.env` file in the current working directory. Never print or commit the key.
+The script loads `GAMALYTIC_API_KEY` from the environment, then a local `.env` file in the current working directory, then `~/.config/skills.env` if the key is still undefined. Never print or commit the key.
 
 If the key is in another project, pass it explicitly as an env file:
 
@@ -113,4 +113,3 @@ Common filters accepted by `games`, `genres`, and `stats`:
 - `--release-status all|released|unreleased|early_access|full_release`
 
 Use `--format table` for quick inspection, `--format json` for exact values, and `--format csv` for spreadsheet-style analysis.
-
