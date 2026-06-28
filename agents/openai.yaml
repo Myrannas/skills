@@ -1,0 +1,5 @@
+interface:
+  display_name: "Gamalytic Research"
+  short_description: "Research Steam markets with Gamalytic"
+  default_prompt: "Use $gamalytic-research to compare recent Steam genres, tags, and comparable games with Gamalytic."
+
